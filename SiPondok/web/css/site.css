@@ -1,0 +1,198 @@
+main > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    background-color: #f5f5f5;
+    font-size: .9em;
+    height: 60px;
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    content: '';
+    left: 3px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: solid 5px transparent;
+    margin: 4px 4px 2px 4px;
+    background: transparent;
+}
+
+a.asc:after {
+    border-bottom: solid 7px #212529;
+    border-top-width: 0;
+}
+
+a.desc:after {
+    border-top: solid 7px #212529;
+    border-bottom-width: 0;
+}
+
+.grid-view th,
+.grid-view td:last-child {
+    white-space: nowrap;
+}
+
+.grid-view .filters input,
+.grid-view .filters select {
+    min-width: 50px;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding-top: 7px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display:block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+/* CSS untuk menampilkan status Lunas dengan ukuran yang lebih pas */
+.status-lunas {
+    background-color: #25b647e2; /* Hijau */
+    color: white; /* Teks putih */
+    padding: 1px 5px; /* Lebih kecil agar tidak terlalu lebar dan tinggi */
+    border-radius: 3px; /* Sudut melengkung lebih kecil */
+    display: inline-block; /* Agar tampil seperti tombol */
+    cursor: not-allowed; /* Menunjukkan bahwa ini tidak bisa diklik */
+    font-weight: bold;
+    text-align: center;
+}
+
+/* web/css/kwitansi.css */
+/* CSS untuk Tampilan Browser */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;  /* Menyesuaikan lebar kontainer */
+    margin: 20px auto;
+    border: 1px solid #000;
+    padding: 10px;
+}
+
+.header {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+}
+
+.label {
+    width: 35%;
+    font-weight: bold;
+}
+
+.value {
+    width: 60%;
+    text-align: left;
+}
+
+.footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.signature {
+    margin-top: 30px;
+    border-top: 1px solid #000;
+    text-align: center;
+    padding-top: 10px;
+}
+
+/* CSS Khusus untuk Tampilan PDF */
+@media print {
+    body * {
+        visibility: hidden;  /* Menyembunyikan semua elemen pada halaman */
+    }
+
+    .kwitansi, .kwitansi * {
+        visibility: visible;  /* Hanya elemen dengan class .kwitansi yang terlihat */
+    }
+
+    .kwitansi {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    
+    .container {
+        width: 80%;
+        margin: 10mm auto;
+        border: 1px solid #000;
+        padding: 10mm;
+    }
+    
+    .header {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .footer {
+        text-align: center;
+        font-size: 14px;
+    }
+    
+    .signature {
+        border-top: 1px solid #000;
+        text-align: center;
+        padding-top: 10mm;
+        margin-top: 20mm;
+    }
+}    
+
+
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
