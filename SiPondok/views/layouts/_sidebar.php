@@ -33,21 +33,30 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <?php
-            echo \hail812\adminlte\widgets\Menu::widget([
-                'items' => [
-                    // ['label' => 'Yii2 PROVIDED', 'header' => true],
-                    ['label' => 'Login', 'url' => ['site/login'], 'icon' => 'sign-in-alt', 'visible' => Yii::$app->user->isGuest],
-                    ['label' => 'Gii',  'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
-                    // ['label' => 'Debug', 'icon' => 'bug', 'url' => ['/debug'], 'target' => '_blank'],
-                    ['label' => 'Santri', 'icon' => 'user', 'url' => ['/santri']],
-                    ['label' => 'Kelas', 'icon' => 'user', 'url' => ['/kelas']],
-                    ['label' => 'Pembayaran', 'icon' => 'coins', 'url' => ['/pembayaran']],
-                    ['label' => 'Jenis Pembayaran', 'icon' => 'file', 'url' => ['/jenis-pembayaran']],
-                    ['label' => 'Tahun ajaran', 'icon' => 'calendar', 'url' => ['/tahun-ajaran']],
-                    ['label' => 'Tagihan', 'icon' => 'pen', 'url' => ['/tagihan']],
-                    // ['label' => 'Histori Pembayaran', 'icon' => 'clipboard', 'url' => ['/histori-pembayaran']],
-                ],
-            ]);
+            if (Yii::$app->user->identity->role == 'admin') {
+                echo \hail812\adminlte\widgets\Menu::widget([
+                    'items' => [
+                        // ['label' => 'Yii2 PROVIDED', 'header' => true],
+                        ['label' => 'Login', 'url' => ['site/login'], 'icon' => 'sign-in-alt', 'visible' => Yii::$app->user->isGuest],
+                        ['label' => 'Gii',  'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
+                        // ['label' => 'Debug', 'icon' => 'bug', 'url' => ['/debug'], 'target' => '_blank'],
+                        ['label' => 'Santri', 'icon' => 'user', 'url' => ['/santri']],
+                        ['label' => 'Kelas', 'icon' => 'user', 'url' => ['/kelas']],
+                        ['label' => 'Pembayaran', 'icon' => 'coins', 'url' => ['/pembayaran']],
+                        ['label' => 'Jenis Pembayaran', 'icon' => 'file', 'url' => ['/jenis-pembayaran']],
+                        ['label' => 'Tahun ajaran', 'icon' => 'calendar', 'url' => ['/tahun-ajaran']],
+                        ['label' => 'Tagihan', 'icon' => 'pen', 'url' => ['/tagihan']],
+                        // ['label' => 'Histori Pembayaran', 'icon' => 'clipboard', 'url' => ['/histori-pembayaran']],
+                    ],
+                ]);
+            } else {
+                echo \hail812\adminlte\widgets\Menu::widget([
+                    'items' => [
+                            ['label' => 'Tagihan', 'icon' => 'pen', 'url' => ['/tagihan-santri']],
+                        ],
+                    ]);
+            }
+           
             ?>
         </nav>
         <!-- /.sidebar-menu -->

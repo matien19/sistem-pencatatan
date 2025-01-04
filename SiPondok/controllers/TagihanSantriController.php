@@ -2,6 +2,7 @@
 
 namespace SiPondok\controllers;
 
+use PhpParser\Node\Stmt\If_;
 use SiPondok\models\Pembayaran;
 use SiPondok\models\Tagihan;
 use SiPondok\models\TagihanSearch;
@@ -9,11 +10,12 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * TagihanController implements the CRUD actions for Tagihan model.
  */
-class TagihanController extends Controller
+class TagihanSantriController extends Controller
 {
     /**
      * @inheritDoc
@@ -43,12 +45,15 @@ class TagihanController extends Controller
         $searchModel = new TagihanSearch();
 
         $statusTagihan = Yii::$app->request->get('status_tagihan', null);
-        
+    
+        $nis = Yii::$app->user->identity->username; 
         $queryParams = Yii::$app->request->queryParams;
+        
         if ($statusTagihan) {
             $queryParams['TagihanSearch']['status_tagihan'] = $statusTagihan;
         }
-        
+    
+        $queryParams['TagihanSearch']['nis'] = $nis; 
         $dataProvider = $searchModel->search($queryParams);
 
         return $this->render('index', [
@@ -65,12 +70,59 @@ class TagihanController extends Controller
      */
     public function actionView($id_tagihan)
     {
+        $pembayaranModel = new Pembayaran();  
         $pembayaranTagihanModel = Pembayaran::find()->where(['id_tagihan' => $id_tagihan])->one();
+        
+        if ($this->request->post()) {
+            $pembayaranModel->load(Yii::$app->request->post());
+            $dateTimeNow = date('Y-m-d H:i:s');
+          
+            $chek = Pembayaran::find()->where(['id_tagihan' => $pembayaranModel->id_tagihan])->one();
+            if ($chek) {
+                Yii::$app->session->setFlash('error', 'Tagihan sudah pernah dibayar.');
+                return $this->redirect(['tagihan-santri/view', 'id_tagihan' => $id_tagihan]);
+            }
+
+            $pembayaranModel->id_tagihan = $id_tagihan;
+            $pembayaranModel->tanggal_bayar = $dateTimeNow;
+            $pembayaranModel->status = 'Validasi';
+            $pembayaranModel->metode_pembayaran = 'transfer';
+
+            // Handle file upload
+            $uploadedFile = UploadedFile::getInstance($pembayaranModel, 'bukti_pembayaran');
+            if ($uploadedFile) {
+                $filePath = 'uploads/' . uniqid() . '.' . $uploadedFile->extension;
+                if ($uploadedFile->saveAs($filePath)) {
+                    $pembayaranModel->bukti_pembayaran = $filePath;
+                } else {
+                    Yii::$app->session->setFlash('error', 'Gagal mengunggah file bukti pembayaran.');
+                    return $this->redirect(['tagihan/index']);
+                }
+            }
+
+            if ($pembayaranModel->save()) {
+                // Update tagihan status
+                $tagihanModel = Tagihan::findOne($pembayaranModel->id_tagihan);
+                if ($tagihanModel) {
+                    $tagihanModel->status_tagihan = 'Validasi';
+                    if ($tagihanModel->save(false)) {
+                        Yii::$app->session->setFlash('success', 'Pembayaran berhasil diproses.');
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Gagal memperbarui status tagihan.');
+                    }
+                } else {
+                    Yii::$app->session->setFlash('error', 'Tagihan tidak ditemukan.');
+                }
+                return $this->redirect(['tagihan-santri/index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Gagal menyimpan data pembayaran.');
+            }
+        }
         
         return $this->render('view', [
             'model' => $this->findModel($id_tagihan),
+            'pembayaranModel' => $pembayaranModel,
             'pembayaranTagihanModel' => $pembayaranTagihanModel,
-
         ]);
     }
 
@@ -134,65 +186,7 @@ class TagihanController extends Controller
 
         return $this->redirect(['index']);
     }
-
-    public function actionTerima($id_pembayaran)
-    {
-        $model = Pembayaran::findOne($id_pembayaran);
-        $model->status = 'Lunas';
-
-        if ($model->save()) {
-            $tagihanModel = Tagihan::findOne($model->id_tagihan);
-            if ($tagihanModel) {
-                $tagihanModel->status_tagihan = 'Lunas';
-                $tagihanModel->save(false);
-            }
-        } 
-        return $this->redirect(['index']);
-    }
-
-    public function actionTolak($id_pembayaran)
-    {
-        $model = Pembayaran::findOne($id_pembayaran);
-        
-        $tagihanModel = Tagihan::findOne($model->id_tagihan);
-        if ($tagihanModel) {
-            $tagihanModel->status_tagihan = 'Belum Lunas';
-            $tagihanModel->save(false);
-        }
-        $model->delete();
-
-        return $this->redirect(['index']);
-    }
     
-    public function actionLunas($id_tagihan)
-    {
-        $dateTimeNow = date('Y-m-d H:i:s');
-        
-        $tagihanModel = Tagihan::findOne($id_tagihan);
-
-        $pembayaranModel = new Pembayaran();  
-        $pembayaranModel->id_tagihan = $id_tagihan;
-        $pembayaranModel->id_tahun_ajaran = $tagihanModel->id_tahun_ajaran;
-        $pembayaranModel->tanggal_bayar = $dateTimeNow;
-        $pembayaranModel->jumlah_bayar  = $tagihanModel->jumlah_tagihan;
-        $pembayaranModel->metode_pembayaran = 'tunai';
-        $pembayaranModel->bukti_pembayaran = 'tunai';
-        $pembayaranModel->keterangan = 'tunai';
-        $pembayaranModel->status = 'Lunas';
-        
-        if ($pembayaranModel->save()) {
-            $tagihanModel->status_tagihan = 'Lunas';
-            $tagihanModel->save(false);
-
-            return $this->redirect(['index']);
-        } else {
-            Yii::error($pembayaranModel->getErrors());
-            Yii::$app->session->setFlash('error', 'Gagal menyimpan data pembayaran.');
-            return $this->redirect(['view', 'id_tagihan' => $id_tagihan]); 
-        }
-
-    }
-
     /**
      * Finds the Tagihan model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

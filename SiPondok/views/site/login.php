@@ -4,7 +4,11 @@ use yii\helpers\Html;
 <div class="card">
     <div class="card-body login-card-body">
         <p class="login-box-msg">Silahkan login untuk masuk</p>
-
+        <?php if (Yii::$app->session->hasFlash('error')): ?>
+            <div class="alert alert-danger">
+                <?= Yii::$app->session->getFlash('error') ?>
+            </div>
+        <?php endif; ?>
         <?php $form = \yii\bootstrap4\ActiveForm::begin(['id' => 'login-form']) ?>
 
         <?= $form->field($model,'username', [
@@ -23,18 +27,20 @@ use yii\helpers\Html;
             'wrapperOptions' => ['class' => 'input-group mb-3']
         ])
             ->label(false)
-            ->passwordInput(['placeholder' => $model->getAttributeLabel('password')]) ?>
+            ->passwordInput(['placeholder' => $model->getAttributeLabel('password_hash')]) ?>
 
         <div class="row">
-            <div class="col-8">
-                <?= $form->field($model, 'rememberMe')->checkbox([
-                    'template' => '<div class="icheck-primary">{input}{label}</div>',
-                    'labelOptions' => [
-                        'class' => ''
-                    ],
-                    'uncheck' => null
-                ]) ?>
-            </div>
+            <!-- <div class="col-8">
+                <?php 
+                // $form->field($model, 'rememberMe')->checkbox([
+                //     'template' => '<div class="icheck-primary">{input}{label}</div>',
+                //     'labelOptions' => [
+                //         'class' => ''
+                //     ],
+                //     'uncheck' => null
+                // ]) 
+                ?>
+            </div> -->
             <div class="col-4">
                 <?= Html::submitButton('Masuk', ['class' => 'btn btn-primary btn-block']) ?>
             </div>

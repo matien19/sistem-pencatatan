@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var SiPondok\models\Pembayaran $model */
 
-$this->title = 'Input Pembayaran';
-$this->params['breadcrumbs'][] = ['label' => 'Pembayaran', 'url' => ['index']];
+$this->title = 'Create Pembayaran';
+$this->params['breadcrumbs'][] = ['label' => 'Pembayarans', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pembayaran-create">

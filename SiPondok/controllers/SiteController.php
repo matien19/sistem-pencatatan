@@ -3,6 +3,7 @@
 namespace SiPondok\controllers;
 
 use common\models\LoginForm;
+use SiPondok\models\usersModel;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -87,16 +88,24 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+    
         $this->layout = 'main-login';
-
+    
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+    
+        if ($model->load(Yii::$app->request->post())) {
+            $user = usersModel::findOne(['username' => $model->username]);
+    
+            if ($user && $user->validatePassword($model->password)) {
+                Yii::$app->user->login($user);
+                return $this->goBack();
+            }
+    
+            Yii::$app->session->setFlash('error', 'Username atau password salah.');
         }
-
+    
         $model->password = '';
-
+    
         return $this->render('login', [
             'model' => $model,
         ]);

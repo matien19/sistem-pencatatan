@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var SiPondok\models\PembayaranSearch $model */
+/** @var SiPondok\models\TagihanSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="pembayaran-search">
+<div class="tagihan-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -18,25 +18,19 @@ use yii\widgets\ActiveForm;
         ],
     ]); ?>
 
-    <?= $form->field($model, 'id_pembayaran') ?>
+    <?= $form->field($model, 'id_tagihan') ?>
 
     <?= $form->field($model, 'nis') ?>
 
-    <?= $form->field($model, 'id_tagihan') ?>
+    <?= $form->field($model, 'id_jenis') ?>
 
     <?= $form->field($model, 'id_tahun_ajaran') ?>
 
-    <?= $form->field($model, 'tanggal_bayar') ?>
+    <?= $form->field($model, 'jumlah_tagihan') ?>
 
-    <?php // echo $form->field($model, 'jumlah_bayar') ?>
-
-    <?php // echo $form->field($model, 'metode_pembayaran') ?>
-
-    <?php // echo $form->field($model, 'bukti_pembayaran') ?>
+    <?php // echo $form->field($model, 'status_tagihan') ?>
 
     <?php // echo $form->field($model, 'keterangan') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

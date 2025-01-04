@@ -13,18 +13,15 @@ use yii\widgets\Pjax;
 $this->title = 'Tagihans';
 $this->params['breadcrumbs'][] = $this->title;
 
-$belumLunasCount = Tagihan::find()->where(['status_tagihan' => 'belum lunas'])->count();
-$validasiCount = Tagihan::find()->where(['status_tagihan' => 'validasi'])->count();
-$lunasCount = Tagihan::find()->where(['status_tagihan' => 'lunas'])->count();
+$nis = Yii::$app->user->identity->username;  
+
+$belumLunasCount = Tagihan::find()->where(['status_tagihan' => 'belum lunas', 'nis' => $nis])->count();
+$validasiCount = Tagihan::find()->where(['status_tagihan' => 'validasi', 'nis' => $nis])->count();
+$lunasCount = Tagihan::find()->where(['status_tagihan' => 'lunas', 'nis' => $nis])->count();
 ?>
 <div class="tagihan-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create Tagihan', ['create'], ['class' => 'btn btn-success']) ?>
-       
-    </p>
     <p>
         <?= Html::a('Belum Lunas (' . $belumLunasCount . ')', ['index', 'status_tagihan' => 'belum lunas'], ['class' => 'btn btn-danger']) ?>
         <?= Html::a('Validasi (' . $validasiCount . ')', ['index', 'status_tagihan' => 'validasi'], ['class' => 'btn btn-warning']) ?>
@@ -97,10 +94,22 @@ $lunasCount = Tagihan::find()->where(['status_tagihan' => 'lunas'])->count();
             'keterangan:ntext',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view}', 
                 'urlCreator' => function ($action, Tagihan $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id_tagihan' => $model->id_tagihan]);
-                 }
+                },
+                'buttons' => [
+                    'view' => function ($url, $model, $key) {
+                        return Html::a('Lihat Detail', $url, [
+                            'class' => 'btn btn-info btn-sm',
+                            'title' => 'Lihat Detail',
+                        ]);
+                    },
+                ],
+                'headerOptions' => ['style' => 'text-align: center;'],
+                'contentOptions' => ['style' => 'text-align: center;'],
             ],
+            
         ],
     ]); ?>
 

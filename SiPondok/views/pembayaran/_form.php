@@ -1,8 +1,5 @@
 <?php
 
-use SiPondok\models\JenisPembayaran;
-use SiPondok\models\Santri;
-use SiPondok\models\TahunAjaran;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -16,46 +13,15 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(['method' => 'post', 'options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <?= $form->errorSummary($model) ?>
+    <?php 
+        $dataPost = ArrayHelper::map(\SiPondok\models\Tagihan::find()->all(), 'id_tagihan', 'nis'); 
+        echo $form->field($model, 'id_tagihan')->dropDownList($dataPost, ['prompt' => 'Pilih Tagihan']);
+    ?>
 
-    <?= $form->field($model, 'id_pembayaran')->hiddenInput()->label(false) ?>
-    
-    <?= $form->field($model, 'nis')->dropDownList(
-        ArrayHelper::map(Santri::find()->all(), 'nis', function ($model) {
-            return $model->nis . ' - ' . $model->nama_santri;
-        }),
-        ['prompt' => 'Pilih Santri']
-    ) ?>
-
-    <?= $form->field($model, 'id_jenis')->dropDownList(
-        ArrayHelper::map(JenisPembayaran::find()->all(), 'id_jenis', 'nama_pembayaran'),
-        ['prompt' => 'Pilih Jenis Pembayaran', 'id' => 'jenis-pembayaran']
-    ) ?>
-
-    <div id="bulan-container" style="display: none;">
-        <?= $form->field($model, 'bulan')->dropDownList(
-            [
-                'Januari' => 'Januari',
-                'Februari' => 'Februari',
-                'Maret' => 'Maret',
-                'April' => 'April',
-                'Mei' => 'Mei',
-                'Juni' => 'Juni',
-                'Juli' => 'Juli',
-                'Agustus' => 'Agustus',
-                'September' => 'September',
-                'Oktober' => 'Oktober',
-                'November' => 'November',
-                'Desember' => 'Desember',
-            ],
-            ['prompt' => 'Pilih Bulan', 'id' => 'bulan-input']
-        ) ?>
-    </div>
-
-    <?= $form->field($model, 'id_tahun_ajaran')->dropDownList(
-        ArrayHelper::map(TahunAjaran::find()->all(), 'id_tahun_ajaran', 'tahun_ajaran'),
-        ['prompt' => 'Pilih Tahun Ajaran']
-    ) ?>
+    <?php 
+        $dataPost = ArrayHelper::map(\SiPondok\models\TahunAjaran::find()->all(), 'id_tahun_ajaran', 'tahun_ajaran'); 
+        echo $form->field($model, 'id_tahun_ajaran')->dropDownList($dataPost, ['prompt' => 'Pilih Tahun Ajaran']);
+    ?>
 
     <?= $form->field($model, 'tanggal_bayar')->textInput(['type' => 'date']) ?>
 
@@ -67,8 +33,12 @@ use yii\widgets\ActiveForm;
     ) ?>
 
     <div id="bukti-pembayaran-field" style="display: none;">
-    <?= $form->field($model, 'bukti_transfer')->fileInput()?>
+    <?= $form->field($model, 'bukti_pembayaran')->fileInput()?>
     </div>
+
+    <?= $form->field($model, 'keterangan')->textarea(['rows' => 6]) ?>
+
+    <?= $form->field($model, 'status')->dropDownList([ 'Validasi' => 'Validasi', 'Lunas' => 'Lunas', ], ['prompt' => 'Pilih status']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Simpan', ['class' => 'btn btn-success']) ?>

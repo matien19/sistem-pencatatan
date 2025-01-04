@@ -32,7 +32,7 @@ class Tagihan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nis', 'id_jenis', 'id_tahun_ajaran', 'jumlah_tagihan', 'status_tagihan', 'keterangan'], 'required'],
+            [['nis', 'id_jenis', 'id_tahun_ajaran', 'jumlah_tagihan',  'keterangan'], 'required'],
             [['id_tahun_ajaran'], 'integer'],
             [['jumlah_tagihan'], 'number'],
             [['status_tagihan', 'keterangan'], 'string'],

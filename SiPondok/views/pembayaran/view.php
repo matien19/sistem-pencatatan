@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /** @var SiPondok\models\Pembayaran $model */
 
 $this->title = $model->id_pembayaran;
-$this->params['breadcrumbs'][] = ['label' => 'Pembayaran', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Pembayarans', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,23 +16,21 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Ubah', ['update', 'id_pembayaran' => $model->id_pembayaran], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Hapus', ['delete', 'id_pembayaran' => $model->id_pembayaran], [
+        <?= Html::a('Update', ['update', 'id_pembayaran' => $model->id_pembayaran], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id_pembayaran' => $model->id_pembayaran], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Apakah kamu yakin ingin menghapus item ini?',
+                'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ]) ?>
-        
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id_pembayaran',
-            'nis',
-            'id_jenis',
+            'id_tagihan',
             'id_tahun_ajaran',
             'tanggal_bayar',
             'jumlah_bayar',
@@ -43,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($model) {
                     // Jika metode pembayaran adalah transfer dan bukti pembayaran ada, tampilkan gambar
                     if ($model->metode_pembayaran === 'transfer' && !empty($model->bukti_pembayaran)) {
-                        return Html::img(Yii::getAlias('@web/uploads/') . $model->bukti_pembayaran, ['height' => '200px']);
+                        return Html::img($model->bukti_pembayaran, ['height' => '200px']);
                     }
                     return 'Tidak ada bukti pembayaran';
                 },

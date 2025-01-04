@@ -43,32 +43,34 @@ class TagihanSearch extends Tagihan
     {
         $query = Tagihan::find();
 
-        // add conditions that should always apply here
-
+        // Menambahkan kondisi yang selalu diterapkan
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
+    
         $this->load($params);
-
+    
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            // Jika validasi gagal, tidak mengembalikan data
             return $dataProvider;
         }
-
-        // grid filtering conditions
+    
+        // Kondisi grid filter
         $query->andFilterWhere([
             'id_tagihan' => $this->id_tagihan,
             'id_tahun_ajaran' => $this->id_tahun_ajaran,
             'jumlah_tagihan' => $this->jumlah_tagihan,
         ]);
-
+    
+        // Menambahkan filter berdasarkan status_tagihan jika diberikan
+        if (!empty($this->status_tagihan)) {
+            $query->andFilterWhere(['status_tagihan' => $this->status_tagihan]);
+        }
+    
         $query->andFilterWhere(['like', 'nis', $this->nis])
             ->andFilterWhere(['like', 'id_jenis', $this->id_jenis])
-            ->andFilterWhere(['like', 'status_tagihan', $this->status_tagihan])
             ->andFilterWhere(['like', 'keterangan', $this->keterangan]);
-
+    
         return $dataProvider;
     }
 }
