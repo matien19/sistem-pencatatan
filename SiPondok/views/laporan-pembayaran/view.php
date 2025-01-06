@@ -46,9 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </select>
         </div>
 
-        
-
         <button type="button" class="btn btn-primary" onclick="submitFilter()">Filter</button>
+        
     </form>
     <?php Pjax::begin(); ?>
     <table class="table table-striped table-bordered">
@@ -111,7 +110,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td colspan="3" style="text-align: right; font-weight: bold;">Total Pembayaran:</td>
                 <td style="font-weight: bold;"><?= Yii::$app->formatter->asCurrency($totalPembayaran) ?></td>
-                <td colspan="4"></td>
+                <td colspan="4">
+                <a href="<?= \yii\helpers\Url::to([
+                    'laporan-pembayaran/export-pdf', 
+                    'id_tahun_ajaran' => Yii::$app->request->get('id_tahun_ajaran'), 
+                    'bulan' => Yii::$app->request->get('bulan')
+                ]) ?>" class="btn btn-danger" target="_blank">
+                    Ekspor PDF
+                </a>
+                </td>
             </tr>
         </tbody>
     </table>

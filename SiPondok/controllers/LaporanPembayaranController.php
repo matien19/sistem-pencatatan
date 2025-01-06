@@ -2,6 +2,7 @@
 
 namespace SiPondok\controllers;
 
+use Mpdf\Mpdf;
 use SiPondok\models\Pembayaran;
 use SiPondok\models\PembayaranSearch;
 use SiPondok\models\TahunAjaran;
@@ -165,5 +166,50 @@ class LaporanPembayaranController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+    public function actionExportPdf($id_tahun_ajaran = null, $bulan = null)
+    {
+        $query = Pembayaran::find()
+            ->joinWith(['tagihan.santri', 'tahunAjaran'])
+            ->where(['pembayaran.status' => 'Lunas']);
+
+        if ($id_tahun_ajaran) {
+            $query->andWhere(['pembayaran.id_tahun_ajaran' => $id_tahun_ajaran]);
+        }
+
+        if ($bulan) {
+            $query->andWhere(['MONTH(pembayaran.tanggal_bayar)' => $bulan]);
+        }
+
+        $pembayaran = $query->all();
+        $totalPembayaran = 0;
+        foreach ($pembayaran as $model) {
+            $totalPembayaran += $model->jumlah_bayar;
+        }
+        $tahunAjaran = TahunAjaran::findOne($id_tahun_ajaran);
+        $tahunAjaranName = $tahunAjaran ? $tahunAjaran->tahun_ajaran : 'Tidak Diketahui';
+    
+        $bulanName = $bulan ? date('F', mktime(0, 0, 0, $bulan, 10)) : '-';
+        $html = $this->renderPartial('_laporan_pdf', [
+            'pembayaran' => $pembayaran,
+            'totalPembayaran' => $totalPembayaran,
+            'tahunAjaran' => $tahunAjaranName,
+            'bulan' => $bulanName,
+        ]);
+        // return $this->render('_laporan_pdf', [
+        //     'pembayaran' => $pembayaran,
+        //     'totalPembayaran' => $totalPembayaran,
+        //     'tahunAjaran' => $tahunAjaranName,
+        //     'bulan' => $bulanName,
+        // ]);
+        $mpdf = new Mpdf([
+            'format' => 'A4-L',
+        ]);
+
+        $mpdf->SetTitle('Laporan Pembayaran');
+        $mpdf->WriteHTML($html);
+
+        // Output file PDF
+        $mpdf->Output('Laporan_Pembayaran.pdf', \Mpdf\Output\Destination::INLINE); 
     }
 }
