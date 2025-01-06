@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'tanggal_bayar',
                 'value' => function ($model) {
-                    return Yii::$app->formatter->asDatetime($model->tanggal_bayar, 'php:d F H:i') . ' WIB';
+                    return Yii::$app->formatter->asDatetime($model->tanggal_bayar, 'php:d F Y H:i') . ' WIB';
                 },
                 'format' => 'raw', 
             ],

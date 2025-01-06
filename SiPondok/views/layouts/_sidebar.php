@@ -46,7 +46,7 @@
                         ['label' => 'Jenis Pembayaran', 'icon' => 'file', 'url' => ['/jenis-pembayaran']],
                         ['label' => 'Tahun ajaran', 'icon' => 'calendar', 'url' => ['/tahun-ajaran']],
                         ['label' => 'Tagihan', 'icon' => 'pen', 'url' => ['/tagihan']],
-                        // ['label' => 'Histori Pembayaran', 'icon' => 'clipboard', 'url' => ['/histori-pembayaran']],
+                        ['label' => 'Laporan', 'icon' => 'clipboard', 'url' => ['/laporan-pembayaran']],
                     ],
                 ]);
             } else {
