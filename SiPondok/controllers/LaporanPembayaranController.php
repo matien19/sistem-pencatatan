@@ -5,6 +5,7 @@ namespace SiPondok\controllers;
 use Mpdf\Mpdf;
 use SiPondok\models\Pembayaran;
 use SiPondok\models\PembayaranSearch;
+use SiPondok\models\Tagihan;
 use SiPondok\models\TahunAjaran;
 use Yii;
 use yii\web\Controller;
@@ -49,12 +50,11 @@ class LaporanPembayaranController extends Controller
         Yii::debug("Filter applied for id_tahun_ajaran: " . $idTahunAjaran);  
         $dataTahunAjaran = ArrayHelper::map(TahunAjaran::find()->all(), 'id_tahun_ajaran', 'tahun_ajaran');
 
-        $pembayaran = Pembayaran::find()
-            ->joinWith(['tagihan.santri'])  
-            ->where(['pembayaran.status' => 'Lunas']); 
+        $pembayaran = Tagihan::find()
+            ->joinWith(['santri']); 
 
         if ($idTahunAjaran) {
-            $pembayaran->andWhere(['pembayaran.id_tahun_ajaran' => $idTahunAjaran]);
+            $pembayaran->andWhere(['tagihan.id_tahun_ajaran' => $idTahunAjaran]);
             
         }
 
@@ -76,17 +76,16 @@ class LaporanPembayaranController extends Controller
     {
         $dataTahunAjaran = ArrayHelper::map(TahunAjaran::find()->all(), 'id_tahun_ajaran', 'tahun_ajaran');
     
-        $query = Pembayaran::find()
-            ->joinWith(['tagihan.santri']) 
-            ->where(['pembayaran.status' => 'Lunas']);
+        $query = Tagihan::find()
+            ->joinWith(['santri']);
     
         if ($id_tahun_ajaran) {
-            $query->andWhere(['pembayaran.id_tahun_ajaran' => $id_tahun_ajaran]);
+            $query->andWhere(['tagihan.id_tahun_ajaran' => $id_tahun_ajaran]);
         }
     
-        if ($bulan) {
-            $query->andWhere(['MONTH(pembayaran.tanggal_bayar)' => $bulan]);
-        }
+        // if ($bulan) {
+        //     $query->andWhere(['MONTH(pembayaran.tanggal_bayar)' => $bulan]);
+        // }
     
         $pembayaran = $query->all();
     
@@ -169,22 +168,21 @@ class LaporanPembayaranController extends Controller
     }
     public function actionExportPdf($id_tahun_ajaran = null, $bulan = null)
     {
-        $query = Pembayaran::find()
-            ->joinWith(['tagihan.santri', 'tahunAjaran'])
-            ->where(['pembayaran.status' => 'Lunas']);
+        $query = Tagihan::find()
+            ->joinWith(['santri', 'tahunAjaran']);
 
         if ($id_tahun_ajaran) {
-            $query->andWhere(['pembayaran.id_tahun_ajaran' => $id_tahun_ajaran]);
+            $query->andWhere(['tagihan.id_tahun_ajaran' => $id_tahun_ajaran]);
         }
 
-        if ($bulan) {
-            $query->andWhere(['MONTH(pembayaran.tanggal_bayar)' => $bulan]);
-        }
+        // if ($bulan) {
+        //     $query->andWhere(['MONTH(pembayaran.tanggal_bayar)' => $bulan]);
+        // }
 
         $pembayaran = $query->all();
         $totalPembayaran = 0;
         foreach ($pembayaran as $model) {
-            $totalPembayaran += $model->jumlah_bayar;
+            $totalPembayaran += $model->jumlah_tagihan;
         }
         $tahunAjaran = TahunAjaran::findOne($id_tahun_ajaran);
         $tahunAjaranName = $tahunAjaran ? $tahunAjaran->tahun_ajaran : 'Tidak Diketahui';

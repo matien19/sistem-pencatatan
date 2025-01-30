@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php endforeach; ?>
             </select>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="bulan">Bulan</label>
             <select class="form-control" id="bulan" name="bulan">
                 <option value="">Pilih Bulan</option>
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <option value="11">November</option>
                 <option value="12">Desember</option>
             </select>
-        </div>
+        </div> -->
 
         <button type="button" class="btn btn-primary" onclick="submitFilter()">Filter</button>
         
@@ -55,9 +55,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <th>#</th>
                 <th>Santri</th>
-                <th>Tanggal Bayar</th>
-                <th>Jumlah Bayar</th>
-                <th>Metode Pembayaran</th>
+                <!-- <th>Tanggal Bayar</th> -->
+                <th>Jumlah Tagihan</th>
+                <!-- <th>Metode Pembayaran</th> -->
                 <th>Keterangan</th>
                 <th>Tahun Ajaran</th>
                 <th>Status</th>
@@ -67,24 +67,24 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php 
             $totalPembayaran = 0;
             foreach ($pembayaran as $index => $model): 
-                $totalPembayaran += $model->jumlah_bayar; 
+                $totalPembayaran += $model->jumlah_tagihan; 
             ?>
                 <tr>
                     <td><?= $index + 1 ?></td>
                     <td>
-                        <?= Html::encode($model->tagihan->santri->nis) ?><br>
-                        <?= Html::encode($model->tagihan->santri->nama_santri) ?>
+                        <?= Html::encode($model->santri->nis) ?><br>
+                        <?= Html::encode($model->santri->nama_santri) ?>
                     </td>
-                    <td>
-                        <?= Yii::$app->formatter->asDatetime($model->tanggal_bayar, 'php:d F Y H:i') . ' WIB' ?>
-                    </td>
-                    <td><?= Yii::$app->formatter->asCurrency($model->jumlah_bayar) ?></td>
-                    <td><?= Html::encode($model->metode_pembayaran) ?></td>
+                    <!-- <td>
+                        Yii::$app->formatter->asDatetime($model->tanggal_bayar, 'php:d F Y H:i') . ' WIB' ?>
+                    </td> -->
+                    <td><?= Yii::$app->formatter->asCurrency($model->jumlah_tagihan) ?></td>
+                    <!-- <td>Html::encode($model->metode_pembayaran) ?></td> -->
                     <td><?= Html::encode($model->keterangan) ?></td>
                     <td><?= Html::encode($model->tahunAjaran->tahun_ajaran) ?></td>
                     <td>
                         <?php
-                        $status = $model->status;
+                        $status = $model->status_tagihan;
                         $badgeClass = '';
 
                         switch ($status) {
@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             <?php endforeach; ?>
             <tr>
-                <td colspan="3" style="text-align: right; font-weight: bold;">Total Pembayaran:</td>
+                <td colspan="2" style="text-align: right; font-weight: bold;">Total Tagihan:</td>
                 <td style="font-weight: bold;"><?= Yii::$app->formatter->asCurrency($totalPembayaran) ?></td>
                 <td colspan="4">
                 <a href="<?= \yii\helpers\Url::to([
@@ -129,7 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
     function submitFilter() {
         var selectedTahunAjaran = document.getElementById('id_tahun_ajaran').value;
-        var selectedBulan = document.getElementById('bulan').value;
+        // var selectedBulan = document.getElementById('bulan').value;
 
         if (!selectedTahunAjaran) {
             alert('Pilih Tahun Ajaran terlebih dahulu');
@@ -139,9 +139,9 @@ $this->params['breadcrumbs'][] = $this->title;
         var url = '<?= \yii\helpers\Url::to(['laporan-pembayaran/view']) ?>';
         var queryParams = 'id_tahun_ajaran=' + selectedTahunAjaran;
 
-        if (selectedBulan) {
-            queryParams += '&bulan=' + selectedBulan;
-        }
+        // if (selectedBulan) {
+        //     queryParams += '&bulan=' + selectedBulan;
+        // }
 
         window.location.href = url + '&' + queryParams;
     }
